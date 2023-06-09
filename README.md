@@ -2,7 +2,7 @@
 
 Manage employees for a company in a SQL database.
 
-Video Example:
+Video Example: https://drive.google.com/file/d/12GC7jlbTWemJvgC6KVPYeCpGHeSIbcMF/view
 
 ## Usage
 
