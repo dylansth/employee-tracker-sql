@@ -39,12 +39,11 @@ async function mainMenu() {
         return addDepartment()
     case "Add a Role":
         return addRole()
+    case "Add an Employee":
+        return addEmployee()
     case "Update an Employee Role":
         return updateRole()
   }
-
-
-
 
 }
 
@@ -89,7 +88,7 @@ async function addDepartment() {
 }
 
 async function addRole() {
-  const roles = await getRoles();
+  const department = await getDepartments();
   console.log(roles);
   const { roleName, salaryName, depName } = await inquirer
   .prompt([
@@ -107,7 +106,7 @@ async function addRole() {
       type: 'list',
       message: "Please select Department",
       name: "depName",
-      choices: roles
+      choices: department
     }
   ])
   console.log(roleName, salaryName, depName)
@@ -120,7 +119,7 @@ async function addRole() {
 async function addEmployee() {
   const employees = await addEmployee();
   console.log(employees);
-  const { roleName, salaryName, depName } = await inquirer
+  const { employeeFirstN, employeeLastN, roleName } = await inquirer
   .prompt([
     {
       type: 'input',
@@ -139,10 +138,10 @@ async function addEmployee() {
       choices: employees
     }
   ])
-  console.log(roleName, salaryName, depName)
-  const query = 'INSERT INTO roles(title, salary, department_id)VALUES(?, ?, ?)'
-  db.query(query, [roleName, salaryName, depName], (err, results) => {
-    console.log("Role Added!")
+  console.log(employeeFirstN, employeeLastN, roleName)
+  const query = 'INSERT INTO employees(first_name, last_name, role_id)VALUES(?, ?, ?)'
+  db.query(query, [employeeFirstN, employeeLastN, roleName], (err, results) => {
+    console.log(`${employeeFirstN} Added!`)
   })
   mainMenu();
 }
@@ -151,7 +150,7 @@ async function updateRole() {
   try {
     const employees = await getEmployees();
     const roles = await getRoles();
-    //List emplotees and save choice as employeeID
+    //List employees and save choice as employeeID
     const { employeeId } = await inquirer.prompt([
       {
         type: 'list',
@@ -165,20 +164,17 @@ async function updateRole() {
       },
     ]);
     //list roles and save selection
-    const { roleId } = await inquirer.prompt([
+    const { roleId, } = await inquirer.prompt([
       {
         type: 'list',
         message: 'Select a new role for the employee:',
         name: 'roleId',
-        choices: roles.map((role) => ({
-          name: role.title,
-          value: role.id,
-        })),
+        choices: roles,
       },
     ]);
 
     const query = 'UPDATE employees SET role_id = ? WHERE id = ?';
-    await db.promise().query(query, [roleId]);
+    await db.promise().query(query, [roleId, employeeId]);
     console.log('Employee role updated successfully!');
   } catch (err) {
     console.error('Error updating employee role:', err);
@@ -188,7 +184,7 @@ async function updateRole() {
 
 async function getEmployees() {
   try {
-    const query = 'SELECT id, first_name, last_name FROM employees';
+    const query = 'SELECT id, first_name, last_name, role_id FROM employees';
     const [results] = await db.promise().query(query);
     return results;
   } catch (err) {
@@ -202,7 +198,11 @@ async function getRoles() {
     const query = 'SELECT id, title FROM roles';
     const [results] = await db.promise().query(query);
     const data = results.map((role) => {
-      return {name: role.title, value: role.id}
+      return {
+        name: role.title,
+        value: parseInt(role.id),
+        salary: parseFloat(role.salary)
+      }
     })
     return data;
   } catch (err) {
@@ -219,7 +219,7 @@ async function getDepartments() {
     })
     return data;
   } catch (err) {
-    console.error('Error retrieving roles:', err);
+    console.error('Error retrieving departments:', err);
     return [];
   }
 }
