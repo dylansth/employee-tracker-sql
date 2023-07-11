@@ -6,13 +6,17 @@ Video Example: https://drive.google.com/file/d/12GC7jlbTWemJvgC6KVPYeCpGHeSIbcMF
 
 ## Usage
 
-Install Dependancies & Run schema.sql using mysql.
+Install Dependencies
 
-Run the server.js using node or NPM to start the application.
+Run schema.sql.
+
+(Optional: Seed Database for Example Data).
+
+Run server.js to start the application.
 
 ## Development
 
-Dependancies: Express, MySQL2, Node & Inquirer.
+Dependencies: Express, MySQL2, Node & Inquirer.
 
 ## License
 
