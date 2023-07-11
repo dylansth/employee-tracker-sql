@@ -1,6 +1,6 @@
 # Employee Tracker
 
-Manage employees for a company in a SQL database.
+Manage employees for a company in a SQL database using this back-end application.
 
 Video Example: https://drive.google.com/file/d/12GC7jlbTWemJvgC6KVPYeCpGHeSIbcMF/view
 
